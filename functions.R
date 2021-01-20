@@ -1,24 +1,14 @@
-#' Determine if the given integer is even or odd
+#' Run a serialized function and arguments, and return in a list.
 #'
-#' @param number Integer
+#' @param payload A base64-encoded serialized R list, containing elements:
+#'   `function`: A function to run.
+#'   `args`: The arguments to the function.
 #'
-#' @return "even" or "odd"
-#' @export
-#'
-#' @examples
-#' parity(3) # odd
-#' parity(4) # even
-parity <- function(number) {
-  list(parity = if (as.integer(number) %% 2 == 0) "even" else "odd")
-}
-
-#' A nullary function that returns the current version of R
-#'
-#' @return character
-#' @export
-#'
-#' @examples
-#' hello()
-hello <- function() {
-  list(response = paste("Hello from", version$version.string))
+#' @return A list with element `result` with the result of the function call.
+handler <- function(payload) {
+  decode <- function(x) unserialize(base64enc::base64decode(x))
+  data <- decode(payload)
+  f <- data[["function"]]
+  args <- data[["args"]]
+  return(list(result = do.call(f, args)))
 }
