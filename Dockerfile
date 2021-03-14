@@ -12,9 +12,9 @@ RUN yum -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.n
 ENV PATH="${PATH}:/opt/R/${R_VERSION}/bin/"
 
 # System requirements for R packages
-RUN yum -y install openssl-devel
+RUN yum -y install libcurl-devel libxml2-devel openssl-devel
 
-RUN Rscript -e "install.packages(c('httr', 'jsonlite', 'logger', 'base64enc'), repos = 'https://cloud.r-project.org/')"
+RUN Rscript -e "install.packages(c('httr', 'jsonlite', 'logger', 'base64enc', 'paws'), repos = 'https://cloud.r-project.org/')"
 
 COPY runtime.R functions.R ${LAMBDA_TASK_ROOT}/
 RUN chmod 755 -R ${LAMBDA_TASK_ROOT}/

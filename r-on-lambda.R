@@ -71,6 +71,8 @@ get_args <- function(f, args) {
   return(jsonlite::toJSON(list(payload = encode(data)), auto_unbox = TRUE))
 }
 
+#-------------------------------------------------------------------------------
+
 # Run the given function `f` with arguments in named list `args`.
 run <- function(f, args) {
   resp <- lambda$invoke(
@@ -83,4 +85,19 @@ run <- function(f, args) {
 }
 
 run(function(a, b, c) a + b + c, list(a = 1, b = 2, c = 3))
+
+#-------------------------------------------------------------------------------
+
+# Run the given function `f` with arguments in named list `args`.
+run_async <- function(f, args) {
+  resp <- lambda$invo(
+    FunctionName = "r-on-lambda",
+    InvocationType = "Event", 
+    Payload = get_args(f, args)
+  )
+  return(resp)
+}
+
+run(function(a, b, c) a + b + c, list(a = 1, b = 2, c = 3))
+
 
