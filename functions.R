@@ -23,8 +23,8 @@ if (!exists("s3")) {
 #' @param payload A base64-encoded serialized R list, containing elements:
 #'   `function`: A function to run.
 #'   `args`: The arguments to the function.
-#'   `s3uri`: The S3 path to write outputs to.
-#'   `id`: A unique ID; results will be written to a file with this name.
+#'   `bucket`: The S3 bucket to write outputs to.
+#'   `key`: The key the output will be written to.
 #'
 #' @return None.
 handler_async <- function(payload) {
