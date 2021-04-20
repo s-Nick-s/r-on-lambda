@@ -12,9 +12,23 @@ RUN yum -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.n
 ENV PATH="${PATH}:/opt/R/${R_VERSION}/bin/"
 
 # System requirements for R packages
-RUN yum -y install libcurl-devel libxml2-devel openssl-devel
+RUN yum -y install libcurl-devel libxml2-devel openssl-devel tar
 
-RUN Rscript -e "install.packages(c('httr', 'jsonlite', 'logger', 'base64enc', 'paws'), repos = 'https://cloud.r-project.org/')"
+#Required packages
+RUN echo "options(repos = c(CRAN = 'https://cloud.r-project.org/'), download.file.method = 'libcurl')" >> "/opt/R/${R_VERSION}/lib/R/etc/Rprofile.site"
+
+RUN Rscript -e 'install.packages("remotes")'
+RUN Rscript -e 'remotes::install_version("httr", upgrade="never", version = NULL)'
+RUN Rscript -e 'remotes::install_version("jsonlite", upgrade="never", version = NULL)'
+RUN Rscript -e 'remotes::install_version("logger", upgrade="never", version = NULL)'
+RUN Rscript -e 'remotes::install_version("base64enc", upgrade="never", version = NULL)'
+RUN Rscript -e 'remotes::install_version("paws", upgrade="never", version = NULL)'
+
+#Optional packages
+RUN Rscript -e 'remotes::install_version("data.table", upgrade="never", version = NULL)'
+RUN Rscript -e 'remotes::install_version("magrittr", upgrade="never", version = NULL)'
+RUN Rscript -e 'remotes::install_version("stringr", upgrade="never", version = NULL)'
+
 
 COPY runtime.R functions.R ${LAMBDA_TASK_ROOT}/
 RUN chmod 755 -R ${LAMBDA_TASK_ROOT}/
